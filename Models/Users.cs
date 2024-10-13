@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace Api_controllers.Models
 {
-    public class Users
+    public class UserDTO
     {
         public int Id { get; set; }
         public string? FirstName { get; set; }

@@ -13,19 +13,20 @@ namespace Api_controllers.Controllers
     public class UsersController : ControllerBase
     {
 
-        private static List<Users> users = new List<Users>();
+        private static List<Models.UserDTO> users = new List<Models.UserDTO>();
 
         [HttpGet]
         public IActionResult GetUsers()
         {
-            Users user = new Users();
+            Models.UserDTO user = new Models.UserDTO();
             user.Id = 1 ;
             user.FirstName = "luis";
             user.LastName = "collymoore";
             user.Email = "lcollymoore";
+
+            users.Add(user);
             
-            
-            return Ok(user);
+            return Ok(users);
 
         }
     }
