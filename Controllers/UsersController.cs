@@ -29,5 +29,20 @@ namespace Api_controllers.Controllers
             return Ok(users);
 
         }
+
+        [HttpPost]
+        public IActionResult AddUsers()
+        {
+            Models.UserDTO user = new Models.UserDTO();
+            user.Id = 1 ;
+            user.FirstName = "luis";
+            user.LastName = "collymoore";
+            user.Email = "lcollymoore";
+
+            users.Add(user);
+            
+            return Ok(users);
+
+        }
     }
 }
