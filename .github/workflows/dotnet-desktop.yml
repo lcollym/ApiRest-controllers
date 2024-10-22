@@ -24,9 +24,9 @@ jobs:
 
     - name: "Display event data"
       run: |
-        run: echo "Evento: ${{ github.event_name }}
-        echo "GITHUB_ACTOR: ${{ github.actor }}
-        echo "GITHUB_REPOSITORY:${{ github.repository }}
+        run: echo Evento: ${{ github.event_name }}
+        echo GITHUB_ACTOR: ${{ github.actor }}
+        echo GITHUB_REPOSITORY: ${{ github.repository }}
 
     # Aquí puedes agregar más pasos según lo que necesites para compilar, ejecutar pruebas, empaquetar, etc.
           
