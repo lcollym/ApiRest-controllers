@@ -24,7 +24,7 @@ jobs:
 
     - name: "Display event data"
       run: |
-        run: echo Evento: ${{ github.event_name }}
+        echo echo Evento: ${{ github.event_name }}
         echo GITHUB_ACTOR: ${{ github.actor }}
         echo GITHUB_REPOSITORY: ${{ github.repository }}
 
