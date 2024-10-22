@@ -15,34 +15,45 @@ namespace Api_controllers.Controllers
 
         private static List<Models.UserDTO> users = new List<Models.UserDTO>();
 
-        [HttpGet]
-        public IActionResult GetUsers()
+   [HttpGet]
+public IActionResult GetUsers()
+{
+    // Verificamos si la lista de usuarios ya contiene datos
+    if (!users.Any())
+    {
+        // Solo agregamos un usuario si la lista está vacía, o bien esto puede ser omitido
+        Models.UserDTO user = new Models.UserDTO
         {
-            Models.UserDTO user = new Models.UserDTO();
-            user.Id = 1 ;
-            user.FirstName = "luis";
-            user.LastName = "collymoore";
-            user.Email = "lcollymoore";
+        };
 
-            users.Add(user);
-            
-            return Ok(users);
+        users.Add(user);  // Asumimos que `users` es una lista inicializada previamente
+    }
+    
+    return Ok(users);  // Devuelve la lista de usuarios actual
+}
 
-        }
+[HttpPost]
+public IActionResult AddUsers([FromBody] Models.UserDTO newUser)
+{
+    if (newUser == null)
+    {
+        return BadRequest("Invalid user data.");
+    }
 
-        [HttpPost]
-        public IActionResult AddUsers()
-        {
-            Models.UserDTO user = new Models.UserDTO();
-            user.Id = 1 ;
-            user.FirstName = "luis";
-            user.LastName = "collymoore";
-            user.Email = "lcollymoore";
+    // Asignar valores a las propiedades del nuevo usuario.
+    Models.UserDTO user = new Models.UserDTO
+    {
+        Id = Guid.NewGuid(),  // Generar un identificador único para el usuario.
+        FirstName = newUser.FirstName,
+        LastName = newUser.LastName,
+        Email = newUser.Email
+    };
 
-            users.Add(user);
-            
-            return Ok(users);
+    // Asumiendo que 'users' es una lista de usuarios que ya está inicializada.
+    users.Add(user);
 
-        }
+    return Ok(users);
+}
+
     }
 }
