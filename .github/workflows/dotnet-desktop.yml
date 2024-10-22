@@ -24,7 +24,6 @@ jobs:
 
     - name: "Display event data"
       run: |
-        echo "Evento: $github.event"
         echo "GITHUB_ACTOR: $GITHUB_ACTOR"
         echo "GITHUB_REPOSITORY: $GITHUB_REPOSITORY"
 
