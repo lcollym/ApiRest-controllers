@@ -36,7 +36,7 @@
 # For a complete CI/CD sample to get started with GitHub Action workflows for Desktop Applications,
 # refer to https://github.com/microsoft/github-actions-for-desktop-apps
 
-name: .NET Core Desktop
+name: .ASP CORE_API
 
 on:
   push:
@@ -64,4 +64,10 @@ jobs:
     steps:
     - name: Testeando cli
       uses: actions/checkout@v4
+    
+    - name: mostrar variable
+      run: |
+        echo "Evento: ${{toJSON(github.event)}}" 
+      
+
 
