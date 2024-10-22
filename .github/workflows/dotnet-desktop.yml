@@ -62,8 +62,8 @@ jobs:
       # Wap_Project_Path: your-wap-project-path                   # Replace with the path to your Wap project, i.e. MyWpf.App.Package\MyWpfApp.Package.wapproj.
 
     steps:
-    - name: Testeando cli
-      uses: actions/checkout@v4
+    # - name: Testeando cli
+    #   uses: actions/checkout@v4
     
     - name: mostrar variable
       run: |
