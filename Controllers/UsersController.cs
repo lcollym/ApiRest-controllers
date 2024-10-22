@@ -15,45 +15,58 @@ namespace Api_controllers.Controllers
 
         private static List<Models.UserDTO> users = new List<Models.UserDTO>();
 
-   [HttpGet]
-public IActionResult GetUsers()
-{
-    // Verificamos si la lista de usuarios ya contiene datos
-    if (!users.Any())
-    {
-        // Solo agregamos un usuario si la lista está vacía, o bien esto puede ser omitido
-        Models.UserDTO user = new Models.UserDTO
+        [HttpGet]
+        public IActionResult GetUsers()
         {
-        };
+            return Ok(users);  // Devuelve la lista de usuarios actual
+        }
 
-        users.Add(user);  // Asumimos que `users` es una lista inicializada previamente
-    }
+        [HttpPost]
+        public IActionResult AddUsers([FromBody] Models.UserDTO newUser)
+        {
+            if (newUser == null)
+            {
+                return BadRequest("Invalid user data.");
+            }
+
+            // Asignar valores a las propiedades del nuevo usuario.
+            Models.UserDTO user = new Models.UserDTO
+            {
+                Id = Guid.NewGuid(),  // Generar un identificador único para el usuario.
+                FirstName = newUser.FirstName,
+                LastName = newUser.LastName,
+                Email = newUser.Email
+            };
+
+            // Asumiendo que 'users' es una lista de usuarios que ya está inicializada.
+            users.Add(user);
+
+            return Ok(users);
+        }
+
     
-    return Ok(users);  // Devuelve la lista de usuarios actual
-}
 
-[HttpPost]
-public IActionResult AddUsers([FromBody] Models.UserDTO newUser)
+   [HttpDelete]
+public IActionResult DeleteUsers([FromBody] Models.UserDTO userToDelete)
 {
-    if (newUser == null)
+    if (userToDelete == null || userToDelete.Id == Guid.Empty)
     {
         return BadRequest("Invalid user data.");
     }
 
-    // Asignar valores a las propiedades del nuevo usuario.
-    Models.UserDTO user = new Models.UserDTO
-    {
-        Id = Guid.NewGuid(),  // Generar un identificador único para el usuario.
-        FirstName = newUser.FirstName,
-        LastName = newUser.LastName,
-        Email = newUser.Email
-    };
+    // Buscar al usuario en la lista por su Id
+    var user = users.FirstOrDefault(u => u.Id == userToDelete.Id);
 
-    // Asumiendo que 'users' es una lista de usuarios que ya está inicializada.
-    users.Add(user);
+    if (user == null)
+    {
+        return NotFound("User not found.");
+    }
+
+    // Eliminar el usuario de la lista
+    users.Remove(user);
 
     return Ok(users);
 }
 
-    }
+}
 }
