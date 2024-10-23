@@ -1,9 +1,10 @@
 {
   "version": 2,
-  "dgSpecHash": "ipyeOvBOfh4=",
+  "dgSpecHash": "WKs/NJk71+w=",
   "success": true,
   "projectFilePath": "C:\\Users\\lcoll\\code\\Ninja.NET\\Api-controllers\\Api-controllers.csproj",
   "expectedPackageFiles": [
+    "C:\\Users\\lcoll\\.nuget\\packages\\dapper\\2.1.35\\dapper.2.1.35.nupkg.sha512",
     "C:\\Users\\lcoll\\.nuget\\packages\\humanizer.core\\2.14.1\\humanizer.core.2.14.1.nupkg.sha512",
     "C:\\Users\\lcoll\\.nuget\\packages\\microsoft.aspnetcore.openapi\\8.0.5\\microsoft.aspnetcore.openapi.8.0.5.nupkg.sha512",
     "C:\\Users\\lcoll\\.nuget\\packages\\microsoft.bcl.asyncinterfaces\\6.0.0\\microsoft.bcl.asyncinterfaces.6.0.0.nupkg.sha512",

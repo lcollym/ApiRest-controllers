@@ -5,7 +5,8 @@ using System.Threading.Tasks;
 using Api_controllers.DATA;
 using Api_controllers.Models;
 using Microsoft.AspNetCore.Mvc;
-
+using Microsoft.Data.Sqlite;
+using Dapper;
 namespace Api_controllers.Controllers
 {
     [ApiController]
@@ -13,60 +14,60 @@ namespace Api_controllers.Controllers
     public class UsersController : ControllerBase
     {
 
-        private static List<Models.UserDTO> users = new List<Models.UserDTO>();
+        private readonly string _connectionString;
 
-        [HttpGet]
-        public IActionResult GetUsers()
+        public UsersController(IConfiguration configuration)
         {
-            return Ok(users);  // Devuelve la lista de usuarios actual
+            _connectionString = configuration.GetConnectionString("DefaultConnection");
         }
 
+       [HttpGet]
+public IActionResult GetUsers()
+{
+    using (var connection = new SqliteConnection(_connectionString))
+    {
+        connection.Open();
+
+        // Crear la tabla si no existe (opcional, puedes dejarlo fuera si no es necesario)
+        // var createTableCmd = connection.CreateCommand();
+        // createTableCmd.CommandText = @"
+        //     CREATE TABLE IF NOT EXISTS Users (
+        //         Id  INTEGER PRIMARY KEY AUTOINCREMENT,
+        //         FirstName TEXT NOT NULL,
+        //         LastName TEXT NOT NULL,
+        //         Email TEXT NOT NULL
+        //     )";
+        // createTableCmd.ExecuteNonQuery();
+
+        // Obtener los usuarios
+        var getQuery = "SELECT * FROM Users";
+        var users = connection.Query<DATA.UserDTO>(getQuery);
+
+        return Ok(users);  // Devuelve la lista de usuarios
+    }
+}
+
+
         [HttpPost]
-        public IActionResult AddUsers([FromBody] Models.UserDTO newUser)
+        public IActionResult AddUsers([FromBody] DATA.UserDTO newUser)
         {
             if (newUser == null)
             {
                 return BadRequest("Invalid user data.");
             }
 
-            // Asignar valores a las propiedades del nuevo usuario.
-            Models.UserDTO user = new Models.UserDTO
+            using (var connection = new SqliteConnection(_connectionString))
             {
-                Id = Guid.NewGuid(),  // Generar un identificador único para el usuario.
-                FirstName = newUser.FirstName,
-                LastName = newUser.LastName,
-                Email = newUser.Email
-            };
+                connection.Open();
 
-            // Asumiendo que 'users' es una lista de usuarios que ya está inicializada.
-            users.Add(user);
+                // Insertar el nuevo usuario
+                var insertQuery = "INSERT INTO Users (FirstName, LastName, Email) VALUES (@FirstName, @LastName, @Email); SELECT last_insert_rowid();";
+                var userId = connection.ExecuteScalar<int>(insertQuery, newUser);
 
-            return Ok(users);
+                return CreatedAtAction(nameof(GetUsers), new { id = newUser.Id }, newUser);
+            }
         }
 
-    
 
-   [HttpDelete]
-public IActionResult DeleteUsers([FromBody] Models.UserDTO userToDelete)
-{
-    if (userToDelete == null || userToDelete.Id == Guid.Empty)
-    {
-        return BadRequest("Invalid user data.");
     }
-
-    // Buscar al usuario en la lista por su Id
-    var user = users.FirstOrDefault(u => u.Id == userToDelete.Id);
-
-    if (user == null)
-    {
-        return NotFound("User not found.");
-    }
-
-    // Eliminar el usuario de la lista
-    users.Remove(user);
-
-    return Ok(users);
-}
-
-}
 }
