@@ -21,31 +21,31 @@ namespace Api_controllers.Controllers
             _connectionString = configuration.GetConnectionString("DefaultConnection");
         }
 
-       [HttpGet]
-public IActionResult GetUsers()
-{
-    using (var connection = new SqliteConnection(_connectionString))
-    {
-        connection.Open();
+        [HttpGet]
+        public IActionResult GetUsers()
+        {
+            using (var connection = new SqliteConnection(_connectionString))
+            {
+                connection.Open();
 
-        // Crear la tabla si no existe (opcional, puedes dejarlo fuera si no es necesario)
-        // var createTableCmd = connection.CreateCommand();
-        // createTableCmd.CommandText = @"
-        //     CREATE TABLE IF NOT EXISTS Users (
-        //         Id  INTEGER PRIMARY KEY AUTOINCREMENT,
-        //         FirstName TEXT NOT NULL,
-        //         LastName TEXT NOT NULL,
-        //         Email TEXT NOT NULL
-        //     )";
-        // createTableCmd.ExecuteNonQuery();
+                // Crear la tabla si no existe (opcional, puedes dejarlo fuera si no es necesario)
+                // var createTableCmd = connection.CreateCommand();
+                // createTableCmd.CommandText = @"
+                //     CREATE TABLE IF NOT EXISTS Users (
+                //         Id  INTEGER PRIMARY KEY AUTOINCREMENT,
+                //         FirstName TEXT NOT NULL,
+                //         LastName TEXT NOT NULL,
+                //         Email TEXT NOT NULL
+                //     )";
+                // createTableCmd.ExecuteNonQuery();
 
-        // Obtener los usuarios
-        var getQuery = "SELECT * FROM Users";
-        var users = connection.Query<DATA.UserDTO>(getQuery);
+                // Obtener los usuarios
+                var getQuery = "SELECT * FROM Users";
+                var users = connection.Query<DATA.UserDTO>(getQuery);
 
-        return Ok(users);  // Devuelve la lista de usuarios
-    }
-}
+                return Ok(users);  // Devuelve la lista de usuarios
+            }
+        }
 
 
         [HttpPost]
@@ -62,12 +62,40 @@ public IActionResult GetUsers()
 
                 // Insertar el nuevo usuario
                 var insertQuery = "INSERT INTO Users (FirstName, LastName, Email) VALUES (@FirstName, @LastName, @Email); SELECT last_insert_rowid();";
-                var userId = connection.ExecuteScalar<int>(insertQuery, newUser);
+                var userId = connection.Execute(insertQuery, newUser);
 
-                return CreatedAtAction(nameof(GetUsers), new { id = newUser.Id }, newUser);
+                return Ok();
             }
         }
 
+        [HttpDelete]
+        public IActionResult DeleteUser([FromBody] DATA.UserDTO user)
+        {
+            if (user == null || user.Id == 0)
+            {
+                return BadRequest("Invalid user data.");
+            }
+
+            using (var connection = new SqliteConnection(_connectionString))
+            {
+                connection.Open();
+
+                // Consulta SQL correcta para eliminar un usuario
+                var deleteQuery = "DELETE FROM Users WHERE Id = @Id;";
+
+                // Ejecutar la consulta para eliminar el usuario
+                var rowsAffected = connection.Execute(deleteQuery, new { Id = user.Id });
+
+                if (rowsAffected > 0)
+                {
+                    return Ok("User deleted successfully.");
+                }
+                else
+                {
+                    return NotFound("User not found.");
+                }
+            }
+        }
 
     }
 }
